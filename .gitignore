@@ -63,3 +63,6 @@ proguard/
 *.exe
 *.out
 *.app
+
+#‚»‚Ì‘¼
+*.o.d
