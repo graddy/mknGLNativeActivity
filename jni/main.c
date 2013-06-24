@@ -21,6 +21,7 @@
 
 #include <EGL/egl.h>
 #include <GLES/gl.h>
+#include <math.h>
 
 #include <android/sensor.h>
 #include <android/log.h>
@@ -45,23 +46,95 @@ struct saved_state {
  * アプリケーション内共通データ
  */
 struct engine {
+	/* Androidアプリの情報 */
     struct android_app* app;
-
+    /* センサー系の情報 */
     ASensorManager* sensorManager;
     const ASensor* accelerometerSensor;
     ASensorEventQueue* sensorEventQueue;
 
-    int animating;
+    int animating;				//! アニメーション中
+    /* OpenGLESの情報*/
     EGLDisplay display;
     EGLSurface surface;
     EGLContext context;
+    /* 画面サイズ */
     int32_t width;
     int32_t height;
     struct saved_state state;
 };
 
+
+
+void gluPerspective(double fovy, double aspect, double zNear, double zFar) {
+    GLfloat xmin, xmax, ymin, ymax;
+    ymax = zNear * tan(fovy * M_PI / 360.0);
+    ymin = -ymax;
+    xmin = ymin * aspect;
+    xmax = ymax * aspect;
+    glFrustumf(xmin, xmax, ymin, ymax, zNear, zFar);
+}
+
+#define LENGTH (15)
+short triangleBuffer[] = {
+/*        X                Y          Z */
+-LENGTH / 2, -LENGTH / 2, 0, LENGTH - LENGTH / 2, -LENGTH / 2, 0, -LENGTH
+        / 2, LENGTH - LENGTH / 2, 0, LENGTH - LENGTH / 2, LENGTH - LENGTH
+        / 2, 0, };
+
+float colorBuffer[] = {
+/*   R    G    B    A  */
+1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.5, 0.5, 0.0,
+        1.0, };
+///////////////
+
+/**
+ * 表示の初期化
+ */
+void initBox(struct engine* engine) {
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+    glClearColor(.7f, .7f, .9f, 1.f);
+    glShadeModel(GL_SMOOTH);
+
+    float ratio = (float) engine->width / (float) engine->height;
+    glViewport(0, 0, (int) engine->width, (int) engine->height);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(40.0, ratio, 0.1, 100);
+}
+
+static float angle = 0;
+void drawBox(void) {
+    // 表示の初期化(毎フレーム)
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0.0, 0.0, -50.0);
+
+    // 四角を回転
+    angle = (angle + 2);
+    if (angle > 360)
+        angle = 0;
+    glRotatef(angle, angle, 0, 1.0f);
+
+    // 描画する
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glVertexPointer(3, GL_SHORT, 0, triangleBuffer);
+    glColorPointer(4, GL_FLOAT, 0, colorBuffer);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+}
+///////////////
 /**
  * Initialize an EGL context for the current display.
+ * EGL初期化
  */
 static int engine_init_display(struct engine* engine) {
     // initialize OpenGL ES and EGL
@@ -70,6 +143,7 @@ static int engine_init_display(struct engine* engine) {
      * Here specify the attributes of the desired configuration.
      * Below, we select an EGLConfig with at least 8 bits per color
      * component compatible with on-screen windows
+     * 有効にするEGLパラメータ
      */
     const EGLint attribs[] = {
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -83,7 +157,7 @@ static int engine_init_display(struct engine* engine) {
     EGLConfig config;
     EGLSurface surface;
     EGLContext context;
-
+    /* ディスプレイを取得し初期化 */
     EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
     eglInitialize(display, 0, 0);
@@ -112,6 +186,8 @@ static int engine_init_display(struct engine* engine) {
     eglQuerySurface(display, surface, EGL_WIDTH, &w);
     eglQuerySurface(display, surface, EGL_HEIGHT, &h);
 
+    LOGI("ScreenSize: width=%d height=%d", w, h);
+
     engine->display = display;
     engine->context = context;
     engine->surface = surface;
@@ -125,11 +201,16 @@ static int engine_init_display(struct engine* engine) {
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
 
+    //mkn add
+    // ボックス表示の初期化
+    initBox(engine);
+
     return 0;
 }
 
 /**
  * Just the current frame in the display.
+ * フレーム描画
  */
 static void engine_draw_frame(struct engine* engine) {
     if (engine->display == NULL) {
@@ -142,11 +223,15 @@ static void engine_draw_frame(struct engine* engine) {
             ((float)engine->state.y)/engine->height, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    //mkn add
+    drawBox();
+
     eglSwapBuffers(engine->display, engine->surface);
 }
 
 /**
  * Tear down the EGL context currently associated with the display.
+ * Displayの破棄
  */
 static void engine_term_display(struct engine* engine) {
     if (engine->display != EGL_NO_DISPLAY) {
@@ -167,10 +252,12 @@ static void engine_term_display(struct engine* engine) {
 
 /**
  * Process the next input event.
+ * 入力イベントの処理
  */
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+    	/* タッチ入力 */
         engine->animating = 1;
         engine->state.x = AMotionEvent_getX(event, 0);
         engine->state.y = AMotionEvent_getY(event, 0);
@@ -185,24 +272,28 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     struct engine* engine = (struct engine*)app->userData;
     switch (cmd) {
-        case APP_CMD_SAVE_STATE:
+        case APP_CMD_SAVE_STATE:		//状態保存要求
+        	LOGI("APP_CMD_SAVE_STATE");
             // The system has asked us to save our current state.  Do so.
             engine->app->savedState = malloc(sizeof(struct saved_state));
             *((struct saved_state*)engine->app->savedState) = engine->state;
             engine->app->savedStateSize = sizeof(struct saved_state);
             break;
-        case APP_CMD_INIT_WINDOW:
+        case APP_CMD_INIT_WINDOW:		//ウィンドウ初期化
+        	LOGI("APP_CMD_INIT_WINDOW");
             // The window is being shown, get it ready.
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
             break;
-        case APP_CMD_TERM_WINDOW:
+        case APP_CMD_TERM_WINDOW:		//ウインドウ破棄
+        	LOGI("APP_CMD_TERM_WINDOW");
             // The window is being hidden or closed, clean it up.
             engine_term_display(engine);
             break;
-        case APP_CMD_GAINED_FOCUS:
+        case APP_CMD_GAINED_FOCUS:		//アプリがフォーカス取得
+        	LOGI("APP_CMD_GAINED_FOCUS");
             // When our app gains focus, we start monitoring the accelerometer.
             if (engine->accelerometerSensor != NULL) {
                 ASensorEventQueue_enableSensor(engine->sensorEventQueue,
@@ -212,7 +303,8 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
                         engine->accelerometerSensor, (1000L/60)*1000);
             }
             break;
-        case APP_CMD_LOST_FOCUS:
+        case APP_CMD_LOST_FOCUS:		//アプリがフォーカスを失ったとき
+        	LOGI("APP_CMD_LOST_FOCUS");
             // When our app loses focus, we stop monitoring the accelerometer.
             // This is to avoid consuming battery while not being used.
             if (engine->accelerometerSensor != NULL) {
@@ -236,7 +328,7 @@ void android_main(struct android_app* state) {
 
     // Make sure glue isn't stripped.
     app_dummy();
-
+    //ユーザーデータ作成
     memset(&engine, 0, sizeof(engine));
     state->userData = &engine;
     state->onAppCmd = engine_handle_cmd;
@@ -245,11 +337,12 @@ void android_main(struct android_app* state) {
 
     // Prepare to monitor accelerometer
     engine.sensorManager = ASensorManager_getInstance();
+    //加速度センサー
     engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
             ASENSOR_TYPE_ACCELEROMETER);
     engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
             state->looper, LOOPER_ID_USER, NULL, NULL);
-
+    /* 前回の状態が保存されているなら、復帰させる */
     if (state->savedState != NULL) {
         // We are starting with a previous saved state; restore from it.
         engine.state = *(struct saved_state*)state->savedState;
@@ -289,11 +382,12 @@ void android_main(struct android_app* state) {
 
             // Check if we are exiting.
             if (state->destroyRequested != 0) {
+            	//終了要求
                 engine_term_display(&engine);
-                return;
+                return;			//終わる
             }
         }
-
+        //アニメーションさせる
         if (engine.animating) {
             // Done with events; draw next animation frame.
             engine.state.angle += .01f;
