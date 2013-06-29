@@ -18,7 +18,7 @@ obj/local/armeabi/objs/mknGlnative-activity/main.o: jni/main.c \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/rect.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/GLES/gl.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/GLES/glplatform.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/sensor.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/math.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/types.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/posix_types.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/stddef.h \
@@ -28,6 +28,14 @@ obj/local/armeabi/objs/mknGlnative-activity/main.o: jni/main.c \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/types.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/kernel.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/sysmacros.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/limits.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/limits.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/limits.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/internal_types.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/limits.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/syslimits.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/page.h \
+ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/sensor.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/looper.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/log.h \
  C:/android/android-ndk-r8e/sources/android/native_app_glue/android_native_app_glue.h \
@@ -41,13 +49,6 @@ obj/local/armeabi/objs/mknGlnative-activity/main.o: jni/main.c \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/siginfo.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm-generic/siginfo.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/signal.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/limits.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/limits.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/limits.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/internal_types.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/limits.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/syslimits.h \
- C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/page.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/string.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/malloc.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/signal.h \
@@ -98,7 +99,7 @@ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/GLES/gl.h:
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/GLES/glplatform.h:
 
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/sensor.h:
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/math.h:
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/types.h:
 
@@ -117,6 +118,22 @@ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/types.
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/kernel.h:
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/sysmacros.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/limits.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/limits.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/limits.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/internal_types.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/limits.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/syslimits.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/page.h:
+
+C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/sensor.h:
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/looper.h:
 
@@ -143,20 +160,6 @@ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/siginfo.
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm-generic/siginfo.h:
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/signal.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/limits.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/limits.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/linux/limits.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/internal_types.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/limits.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/sys/syslimits.h:
-
-C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/asm/page.h:
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/string.h:
 
