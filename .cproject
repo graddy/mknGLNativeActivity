@@ -5,7 +5,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="com.android.toolchain.gcc.375816646">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.android.toolchain.gcc.375816646" moduleId="org.eclipse.cdt.core.settings" name="デフォルト">
-				<externalSettings/>
+				<externalSettings>
+					<externalSetting/>
+				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -29,6 +31,7 @@
 								</outputEntries>
 							</builder>
 							<tool id="com.android.gcc.compiler.624193000" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
+								<option id="com.android.gcc.option.includePath.586809167" superClass="com.android.gcc.option.includePath" valueType="includePath"/>
 								<inputType id="com.android.gcc.inputType.868441882" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
@@ -50,5 +53,7 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/mknGLNativeActivity"/>
+	</storageModule>
 </cproject>
