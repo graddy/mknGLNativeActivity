@@ -25,7 +25,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := mknGlnative-activity
 
-LOCAL_SRC_FILES := main.cpp
+LOCAL_SRC_FILES := png_loader.cpp
+LOCAL_SRC_FILES += main.cpp
 LOCAL_SRC_FILES += image.cpp
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/include

@@ -22,11 +22,12 @@
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 #include <math.h>
-
 #include <android/sensor.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
+#include "image.h"
+#include "png_loader.h"
 
 /* デバッグ用メッセージ */
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "mknGLnative-activity", __VA_ARGS__))	//! Infomation
@@ -318,7 +319,41 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             break;
     }
 }
+void mknTest(struct android_app* state)
+{
+	LOGI("mknTest");
+	AAsset *file = AAssetManager_open(state->activity->assetManager, "test.png", AASSET_MODE_UNKNOWN);
+	if(file == NULL)
+	{
+		LOGI("test.png = FAIL");
+	}
+	else
+	{
+		LOGI("test.png = SUCCESS");
+		AAsset_close(file);
+	}
 
+	AAsset *file2 = AAssetManager_open(state->activity->assetManager, "test2.png", AASSET_MODE_UNKNOWN);
+	if(file2== NULL)
+	{
+		LOGI("test2.png = FAIL");
+	}
+	else
+	{
+		LOGI("test2.png = SUCCESS");
+		AAsset_close(file2);
+	}
+
+	png_uint_32 width,height;
+	GLint type;
+	GLubyte* textureImage;
+	png_loadimage(state->activity->assetManager, "test.png", &width, &height,&type,&textureImage);
+	/* textureImageのDelete必要 */
+
+	//	PNG* ppng;
+//	ppng = new PNG("test.png", state->activity->assetManager);
+
+}
 /**
  * This is the main entry point of a native application that is using
  * android_native_app_glue.  It runs in its own thread, with its own
@@ -350,7 +385,7 @@ void android_main(struct android_app* state) {
     }
 
     // loop waiting for stuff to do.
-
+    mknTest(state);
     while (1) {
         // Read all pending events.
         int ident;
