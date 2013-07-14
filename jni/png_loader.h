@@ -7,6 +7,8 @@
 
 #ifndef PNG_LOADER_H_
 #define PNG_LOADER_H_
+#include <string>
+#include <png.h>
 int png_loadimage(AAssetManager* pAssetManager, const char* pFilename,
 		png_uint_32* outWidth, png_uint_32* outHeight, GLint *type, u_char **outData);
 

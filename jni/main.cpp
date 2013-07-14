@@ -26,8 +26,9 @@
 #include <android/log.h>
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
-#include "image.h"
 #include "png_loader.h"
+#include "testcodes.h"
+
 
 /* デバッグ用メッセージ */
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "mknGLnative-activity", __VA_ARGS__))	//! Infomation
@@ -319,6 +320,9 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             break;
     }
 }
+/*
+ * リソースファイルの読み込みテスト
+ */
 void mknTest(struct android_app* state)
 {
 	LOGI("mknTest");
@@ -350,9 +354,6 @@ void mknTest(struct android_app* state)
 	png_loadimage(state->activity->assetManager, "test.png", &width, &height,&type,&textureImage);
 	/* textureImageのDelete必要 */
 
-	//	PNG* ppng;
-//	ppng = new PNG("test.png", state->activity->assetManager);
-
 }
 /**
  * This is the main entry point of a native application that is using
@@ -383,10 +384,13 @@ void android_main(struct android_app* state) {
         // We are starting with a previous saved state; restore from it.
         engine.state = *(struct saved_state*)state->savedState;
     }
+    /* AssetManagerのリソース読み濃いテスト */
+    testcodes_assetResource_Test(state);
+
+
 
     // loop waiting for stuff to do.
-    mknTest(state);
-    while (1) {
+        while (1) {
         // Read all pending events.
         int ident;
         int events;

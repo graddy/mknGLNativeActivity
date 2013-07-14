@@ -83,7 +83,7 @@ obj/local/armeabi/objs/mknGlnative-activity/main.o: jni/main.cpp \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/native_activity.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/input.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/keycodes.h \
- jni/image.h \
+ jni/png_loader.h \
  C:/android/android-ndk-r8e/sources/cxx-stl/stlport/stlport/string \
  C:/android/android-ndk-r8e/sources/cxx-stl/stlport/stlport/stl/debug/_debug.h \
  C:/android/android-ndk-r8e/sources/cxx-stl/stlport/stlport/stl/_string.h \
@@ -176,7 +176,7 @@ obj/local/armeabi/objs/mknGlnative-activity/main.o: jni/main.cpp \
  C:/android/android-ndk-r8e/sources/cxx-stl/stlport/stlport/setjmp.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/../include/setjmp.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/setjmp.h \
- jni/png_loader.h
+ jni/testcodes.h
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/jni.h:
 
@@ -346,7 +346,7 @@ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/inpu
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/android/keycodes.h:
 
-jni/image.h:
+jni/png_loader.h:
 
 C:/android/android-ndk-r8e/sources/cxx-stl/stlport/stlport/string:
 
@@ -532,4 +532,4 @@ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/../include/s
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/setjmp.h:
 
-jni/png_loader.h:
+jni/testcodes.h:
