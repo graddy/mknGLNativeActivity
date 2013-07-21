@@ -10,6 +10,7 @@
 
 
 void testcodes_assetResource_Test(struct android_app* state);
-
+void initCube(struct android_app* state);
+void drawCube(float* angle);
 
 #endif /* TESTCODES_H_ */

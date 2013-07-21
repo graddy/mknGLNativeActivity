@@ -65,6 +65,8 @@ struct engine {
     int32_t width;
     int32_t height;
     struct saved_state state;
+
+    float angle[2];
 };
 
 
@@ -204,9 +206,12 @@ static int engine_init_display(struct engine* engine) {
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
 
+#if 0	//box
     //mkn add
     // ボックス表示の初期化
     initBox(engine);
+#endif
+    initCube((engine->app));
 
     return 0;
 }
@@ -227,8 +232,10 @@ static void engine_draw_frame(struct engine* engine) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     //mkn add
+#if 0	//box
     drawBox();
-
+#endif
+    drawCube(&(engine->state.angle));
     eglSwapBuffers(engine->display, engine->surface);
 }
 
@@ -385,7 +392,7 @@ void android_main(struct android_app* state) {
         engine.state = *(struct saved_state*)state->savedState;
     }
     /* AssetManagerのリソース読み濃いテスト */
-    testcodes_assetResource_Test(state);
+//    testcodes_assetResource_Test(state);
 
 
 
