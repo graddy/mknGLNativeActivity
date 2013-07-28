@@ -199,13 +199,13 @@ static int engine_init_display(struct engine* engine) {
     engine->width = w;
     engine->height = h;
     engine->state.angle = 0;
-
+#if 0	/* 2d */
     // Initialize GL state.
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
-
+#endif
 #if 0	//box
     //mkn add
     // ボックス表示の初期化
@@ -225,16 +225,16 @@ static void engine_draw_frame(struct engine* engine) {
         // No display.
         return;
     }
+#if 0	//box
 
     // Just fill the screen with a color.
     glClearColor(((float)engine->state.x)/engine->width, engine->state.angle,
             ((float)engine->state.y)/engine->height, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-
     //mkn add
-#if 0	//box
     drawBox();
 #endif
+    prepareFrame(engine->width, engine->height);
     drawCube(&(engine->state.angle));
     eglSwapBuffers(engine->display, engine->surface);
 }

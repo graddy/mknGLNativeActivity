@@ -8,6 +8,7 @@
 #ifndef TESTCODES_H_
 #define TESTCODES_H_
 
+void prepareFrame(    int32_t width, int32_t height);
 
 void testcodes_assetResource_Test(struct android_app* state);
 void initCube(struct android_app* state);

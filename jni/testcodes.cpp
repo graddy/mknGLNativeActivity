@@ -18,21 +18,14 @@
 #include <android/asset_manager.h>
 #include "image.h"
 #include "png_loader.h"
+#include "glu.h"
 
 /* デバッグ用メッセージ */
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "testcodes", __VA_ARGS__))	//! Infomation
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "testcodes", __VA_ARGS__))	//! Warnning
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "testcodes", __VA_ARGS__))	//! Error
 
-/***********************************************************************
- * glu.h/cがないため、サンプルコードから取得
- */
-#define PI 3.1415926535897932f
-static void gluLookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez,
-	              GLfloat centerx, GLfloat centery, GLfloat centerz,
-	              GLfloat upx, GLfloat upy, GLfloat upz);
-static void gluPerspective(GLfloat fovy, GLfloat aspect,
-                           GLfloat zNear, GLfloat zFar);
+
 /*
  *
  ************************************************************************/
@@ -114,6 +107,30 @@ const GLfloat cubeTexCoords[] = {
 		0,0,1,0,1,1,0,1,
 		0,0,1,0,1,1,0,1
 };
+/*
+ * 描画前処理
+ */
+
+void prepareFrame(    int32_t width, int32_t height)
+{
+
+	glViewport(0,0,width, height);
+
+	glClearColor(.7f, .7f, .9f ,1.f);
+
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluPerspective(45, (float)width/ height, 0.5f,500 );
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+
+}
+
 
 /*
  * 四角形の初期化
@@ -132,10 +149,10 @@ void initCube(struct android_app* state)
     glGenTextures(1, &texName[0]);
     glBindTexture(GL_TEXTURE_2D, texName[0]);
 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
     png_uint_32 width, height;
     GLint type;
@@ -148,14 +165,17 @@ void initCube(struct android_app* state)
 void drawCube(float* angle)
 {
 	LOGI("drawCube");
-    //glTranslatef(0.0, 0.0, -50.0);
-
+//    glTranslatef(0.0, 0.0, -50.0);
 	//カメラ位置
 	gluLookAt(0,0,10, 0,0,-100,0,1,0);
+//	gluLookAt(0, 0, 10, 0, 0,-100, 0,1,0 );
+//	glTranslatef(0.0, 0.0, 100.0);
+
 	//回転
     glRotatef(*angle, 1.0f, 0, 0.5f);
+
     //頂点リスト
-    glVertexPointer(3, GL_SHORT, 0, cubeVertices);
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertices);
     //頂点リスト有効化
     glEnableClientState(GL_VERTEX_ARRAY);
     //テクスチャの指定
@@ -164,12 +184,21 @@ void drawCube(float* angle)
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTexCoords);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, cubeIndices);
 
+
 }
 /*******************************************************************
  * 以下、SampleのDemo.cから取得
  ********************************************************************/
-
-static void gluPerspective(GLfloat fovy, GLfloat aspect,
+/***********************************************************************
+ * glu.h/cがないため、サンプルコードから取得
+ */
+#define PI 3.1415926535897932f
+static void gluLookAt2(GLfloat eyex, GLfloat eyey, GLfloat eyez,
+	              GLfloat centerx, GLfloat centery, GLfloat centerz,
+	              GLfloat upx, GLfloat upy, GLfloat upz);
+static void gluPerspective2(GLfloat fovy, GLfloat aspect,
+                           GLfloat zNear, GLfloat zFar);
+static void gluPerspective2(GLfloat fovy, GLfloat aspect,
                            GLfloat zNear, GLfloat zFar)
 {
     GLfloat xmin, xmax, ymin, ymax;
@@ -188,7 +217,7 @@ static void gluPerspective(GLfloat fovy, GLfloat aspect,
 /* Following gluLookAt implementation is adapted from the
  * Mesa 3D Graphics library. http://www.mesa3d.org
  */
-static void gluLookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez,
+static void gluLookAt2(GLfloat eyex, GLfloat eyey, GLfloat eyez,
 	              GLfloat centerx, GLfloat centery, GLfloat centerz,
 	              GLfloat upx, GLfloat upy, GLfloat upz)
 {
