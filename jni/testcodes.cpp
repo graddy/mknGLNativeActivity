@@ -99,8 +99,18 @@ static const GLushort cubeIndices[] ={
 /*
  * テクスチャ位置
  */
+/*
 const GLfloat cubeTexCoords[] = {
 		0,0,1,0,1,1,0,1,
+		0,0,1,0,1,1,0,1,
+		0,0,1,0,1,1,0,1,
+		0,0,1,0,1,1,0,1,
+		0,0,1,0,1,1,0,1,
+		0,0,1,0,1,1,0,1
+};
+*/
+const GLfloat cubeTexCoords[] = {
+		0,0.834, 0.25,0.834, 0.25,1.00, 0,1.00,
 		0,0,1,0,1,1,0,1,
 		0,0,1,0,1,1,0,1,
 		0,0,1,0,1,1,0,1,
@@ -131,6 +141,40 @@ void prepareFrame(    int32_t width, int32_t height)
 
 }
 
+/*
+ * テクスチャの透明化（アルファブレンドの有効化）
+ */
+void testcodeTextureAlphaBrend(void)
+{
+	//ブレンドモードの設定
+	//アルファブレンド
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#if 0	/* ほかの設定 参考 */
+	//反転
+	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+
+	//加算
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	//加算+アルファ(PhotoShop的スクリーン)
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+	//スクリーン(PhotoShop的 比較(明))
+	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+
+	//乗算
+	glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+
+	//乗算+アルファ
+	//dst = dst * src * alpha
+	//= (dst * src) * alpha
+	glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+	glBlendFunc(GL_ZERO, GL_SRC_ALPHA);
+#endif
+	//ブレンド有効
+	glEnable(GL_BLEND);
+}
+
 
 /*
  * 四角形の初期化
@@ -142,6 +186,10 @@ void initCube(struct android_app* state)
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+
+    //アルファブレンド
+    testcodeTextureAlphaBrend();
+
     glCullFace(GL_BACK);
     glShadeModel(GL_SMOOTH);
 
@@ -164,12 +212,9 @@ void initCube(struct android_app* state)
 }
 void drawCube(float* angle)
 {
-	LOGI("drawCube");
-//    glTranslatef(0.0, 0.0, -50.0);
+	LOGI("drawCube %f", *angle);
 	//カメラ位置
 	gluLookAt(0,0,10, 0,0,-100,0,1,0);
-//	gluLookAt(0, 0, 10, 0, 0,-100, 0,1,0 );
-//	glTranslatef(0.0, 0.0, 100.0);
 
 	//回転
     glRotatef(*angle, 1.0f, 0, 0.5f);

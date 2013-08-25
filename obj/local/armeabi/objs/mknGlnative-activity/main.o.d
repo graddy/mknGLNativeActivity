@@ -176,7 +176,7 @@ obj/local/armeabi/objs/mknGlnative-activity/main.o: jni/main.cpp \
  C:/android/android-ndk-r8e/sources/cxx-stl/stlport/stlport/setjmp.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/../include/setjmp.h \
  C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/setjmp.h \
- jni/testcodes.h
+ jni/testcodes.h jni/clsCharactors.h jni/type.h jni/glu.h
 
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/jni.h:
 
@@ -533,3 +533,9 @@ C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/../include/s
 C:/android/android-ndk-r8e/platforms/android-9/arch-arm/usr/include/machine/setjmp.h:
 
 jni/testcodes.h:
+
+jni/clsCharactors.h:
+
+jni/type.h:
+
+jni/glu.h:

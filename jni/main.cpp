@@ -28,7 +28,7 @@
 #include <android/asset_manager.h>
 #include "png_loader.h"
 #include "testcodes.h"
-
+#include "clsCharactors.h"
 
 /* デバッグ用メッセージ */
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "mknGLnative-activity", __VA_ARGS__))	//! Infomation
@@ -67,10 +67,12 @@ struct engine {
     struct saved_state state;
 
     float angle[2];
+
+    long tickTime;
 };
 
 
-
+#if 0	//別定義
 void gluPerspective(double fovy, double aspect, double zNear, double zFar) {
     GLfloat xmin, xmax, ymin, ymax;
     ymax = zNear * tan(fovy * M_PI / 360.0);
@@ -79,7 +81,7 @@ void gluPerspective(double fovy, double aspect, double zNear, double zFar) {
     xmax = ymax * aspect;
     glFrustumf(xmin, xmax, ymin, ymax, zNear, zFar);
 }
-
+#endif
 #define LENGTH (15)
 short triangleBuffer[] = {
 /*        X                Y          Z */
@@ -93,6 +95,12 @@ float colorBuffer[] = {
         1.0, };
 ///////////////
 
+clsCharactor* pTestChara = NULL;
+void initializeScene(struct android_app* state);
+int initializeTextures(struct android_app* state, GLuint* pTexName, int* pWidth, int* pHeight);
+void initializeCharactors(struct android_app* state);
+clsCharactor* createCharactor( int texNum, GLuint* pTexName, int width, int height);
+#define CFG_DRAW_CHARACTOR
 /**
  * 表示の初期化
  */
@@ -199,6 +207,7 @@ static int engine_init_display(struct engine* engine) {
     engine->width = w;
     engine->height = h;
     engine->state.angle = 0;
+    engine->tickTime = 0;
 #if 0	/* 2d */
     // Initialize GL state.
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
@@ -211,8 +220,13 @@ static int engine_init_display(struct engine* engine) {
     // ボックス表示の初期化
     initBox(engine);
 #endif
+#ifdef CFG_DRAW_CUBE			//cube
     initCube((engine->app));
-
+#endif
+#ifdef CFG_DRAW_CHARACTOR
+    initializeScene((engine->app));
+    initializeCharactors((engine->app));
+#endif
     return 0;
 }
 
@@ -225,6 +239,12 @@ static void engine_draw_frame(struct engine* engine) {
         // No display.
         return;
     }
+    /* 時間の取得 */
+	struct timespec now;
+	long nowTick;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	nowTick = (long)(now.tv_sec*1000000000LL + now.tv_nsec);
+
 #if 0	//box
 
     // Just fill the screen with a color.
@@ -234,9 +254,23 @@ static void engine_draw_frame(struct engine* engine) {
     //mkn add
     drawBox();
 #endif
+#ifdef CFG_DRAW_CUBE			//cube
     prepareFrame(engine->width, engine->height);
     drawCube(&(engine->state.angle));
     eglSwapBuffers(engine->display, engine->surface);
+#endif
+
+#ifdef CFG_DRAW_CHARACTOR
+    long tickTime;
+    tickTime = nowTick - engine->tickTime;
+
+    prepareFrame(engine->width, engine->height);
+    pTestChara->MoveFrame(tickTime);
+    pTestChara->Draw();
+    eglSwapBuffers(engine->display, engine->surface);
+    engine->tickTime = nowTick;
+#endif
+
 }
 
 /**
@@ -268,9 +302,15 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
     	/* タッチ入力 */
-        engine->animating = 1;
+        if(engine->animating == 0){
+        	engine->animating = 1;
+        }
+        else{
+        	engine->animating = 0;
+        }
         engine->state.x = AMotionEvent_getX(event, 0);
         engine->state.y = AMotionEvent_getY(event, 0);
+
         return 1;
     }
     return 0;
@@ -397,7 +437,7 @@ void android_main(struct android_app* state) {
 
 
     // loop waiting for stuff to do.
-        while (1) {
+    while (1) {
         // Read all pending events.
         int ident;
         int events;
@@ -437,8 +477,8 @@ void android_main(struct android_app* state) {
         //アニメーションさせる
         if (engine.animating) {
             // Done with events; draw next animation frame.
-            engine.state.angle += .01f;
-            if (engine.state.angle > 1) {
+            engine.state.angle += 1.0f;
+            if (engine.state.angle > 360) {
                 engine.state.angle = 0;
             }
 
@@ -449,3 +489,87 @@ void android_main(struct android_app* state) {
     }
 }
 //END_INCLUDE(all)
+
+
+
+/*
+ * シーンの初期化
+ */
+void initializeScene(struct android_app* state)
+{
+	LOGI("initializeScene");
+	//OpenGLの食器か
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+	//ブレンドモードの設定
+	//アルファブレンド
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//ブレンド有効
+	glEnable(GL_BLEND);
+    glCullFace(GL_BACK);
+    glShadeModel(GL_SMOOTH);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+}
+/*
+ * テクスチャーの初期化
+ */
+int initializeTextures(struct android_app* state, GLuint* pTexName, int* pWidth, int* pHeight)
+{
+    png_uint_32 width, height;
+    GLint type;
+    GLuint texName[1];
+    int textureNum;
+    GLubyte* pTextureImage[1];
+    /* テクスチャ番号の取得 */
+    glGenTextures(1, &texName[0]);
+    for(textureNum = 0; textureNum < 1; textureNum++)
+    {
+		*pTexName = texName[textureNum];
+		glBindTexture(GL_TEXTURE_2D, texName[textureNum]);
+		/* テクスチャ読み込み */
+		png_loadimage(state->activity->assetManager, "test.png", &width, &height,&type, &pTextureImage[0]);
+		*pWidth = width;
+		*pHeight = height;
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, pTextureImage[0]);
+		free(pTextureImage[0]);
+    }
+	return textureNum;
+}
+/*
+ * キャラクタの初期化
+ */
+void initializeCharactors(struct android_app* state)
+{
+	int width[1], height[1];
+	GLuint texName[1];
+    int textureNum = 1;
+    /* テクスチャを展開する */
+    textureNum = initializeTextures(state, texName, width, height);
+    pTestChara = createCharactor(textureNum, texName, width[1], height[1]);
+}
+/*
+  *	createCharactor
+ *	キャラクタを作成する
+ *	引数	：
+ */
+clsCharactor* createCharactor( int texNum, GLuint* pTexName, int width, int height)
+{
+	clsCharactor* pChara;
+
+	/* クラス作成 */
+	pChara = new clsCharactor();
+
+	/* 初期化 t.b.d */
+//	pChara->initialize();
+	/* モデル作成 t.b.d*/
+//	pChara->createModel();
+	/* テクスチャの読み込みと設定 */
+	pChara->AddTexture( *pTexName, width, height);
+
+	return pChara;
+}
