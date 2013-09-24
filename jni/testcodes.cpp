@@ -231,6 +231,117 @@ void drawCube(float* angle)
 
 
 }
+/*************************************************************************
+ * 	png_loadimage
+ * 	ファイル名とAssetManagerから、ファイル読み込み
+ * 	引数		：　pFilename　： ファイル名
+ * 			： 　pAssetManager ：AssetManagerのポインタ
+ *************************************************************************/
+int test_loadFile(AAssetManager* pAssetManager, const char* pFilename)
+{
+	AAsset *assetFile;
+	int size;
+	/* ファイル読み込み */
+	assetFile = AAssetManager_open(pAssetManager, pFilename, AASSET_MODE_RANDOM);
+	if(assetFile == NULL)
+	{
+		LOGE("%s is not found.", pFilename);
+		return -1;
+	}
+
+	/* ファイルサイズ取得 */
+	size = AAsset_getLength(assetFile);
+	LOGI("test_loadFile：size %d", size);
+	/* メモリ取得 */
+	u_char* buf = (u_char*)malloc(size);
+	if(buf == NULL)
+	{
+		LOGE("Buffer Lock Error!!");
+		AAsset_close(assetFile);
+		return -1;
+	}
+	/* 読み出し */
+	AAsset_read(assetFile, buf ,size);
+	AAsset_close(assetFile);
+	for(int i = 0; i < size; i++)
+	{
+		LOGI("%x,", buf[i]);
+	}
+
+
+	free(buf);
+}
+/*************************************************************************
+ * 	test_writeDataFile
+ * 	書き込み可能なデータファイルのオープン
+ * 	/data/data/パッケージ名/ファイル名
+ * 	引数		：
+ *************************************************************************/
+#include <fcntl.h>
+
+#include <iostream>
+using namespace std;
+void test_writeDataFile()
+{
+	FILE *fp;
+	 /* 普通のFOPEN */
+	 fp = fopen( "/data/data/com.example.mknGLNativeActivity/file1.txt", "w+" );
+	 if( fp == NULL ) {
+		 LOGI("fopen: File cannot open error.");
+	 }
+	 else
+	 {
+		 LOGI("fopen: success%x.", fp);
+		 fputs("HELLO WORLD!\n", fp);
+         fflush(fp);
+		 fclose(fp);
+	 }
+	 /* open関数 パーミッション指定なし */
+	 int fd = open("/data/data/com.example.mknGLNativeActivity/file2.txt",
+	        O_CREAT | O_RDWR);
+	 if (fd < 0)
+	 {
+		 LOGI("open: File cannot open error");
+	 }
+	 else
+	 {
+		 LOGI("open: success%x.", fd);
+		 write(fd, "HELLO WORLD2!\n", 15);
+		 fsync(fd);
+		 close(fd);
+	 }
+
+
+	 /* open関数 パーミッション指定=666 */
+	 fd = open("/data/data/com.example.mknGLNativeActivity/file3.txt",
+	        O_CREAT | O_RDWR, 0666);
+	 if (fd < 0)
+	 {
+		 LOGI("open: 666 File cannot open error");
+	 }
+	 else
+	 {
+		 LOGI("open 666: success%x.", fd);
+		 write(fd, "HELLO WORLD3!\n", 15);
+		 fsync(fd);
+		 close(fd);
+	 }
+	 /* open関数 パーミッション指定=666 */
+	 fd = open("/data/data/com.example.mknGLNativeActivity/file4.txt",
+	        O_CREAT | O_RDWR, 0777);
+	 if (fd < 0)
+	 {
+		 LOGI("open: 777 File cannot open error");
+	 }
+	 else
+	 {
+		 LOGI("open 777: success%x.", fd);
+		 write(fd, "HELLO WORLD4!\n", 15);
+		 fsync(fd);
+		 close(fd);
+	 }
+}
+
 /*******************************************************************
  * 以下、SampleのDemo.cから取得
  ********************************************************************/

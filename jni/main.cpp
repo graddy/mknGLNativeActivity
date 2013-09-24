@@ -100,6 +100,8 @@ void initializeScene(struct android_app* state);
 int initializeTextures(struct android_app* state, GLuint* pTexName, int* pWidth, int* pHeight);
 void initializeCharactors(struct android_app* state);
 clsCharactor* createCharactor( int texNum, GLuint* pTexName, int width, int height);
+void mknTest(struct android_app* state);
+
 #define CFG_DRAW_CHARACTOR
 /**
  * •\Ž¦‚Ì‰Šú‰»
@@ -223,6 +225,7 @@ static int engine_init_display(struct engine* engine) {
 #ifdef CFG_DRAW_CUBE			//cube
     initCube((engine->app));
 #endif
+    mknTest((engine->app));
 #ifdef CFG_DRAW_CHARACTOR
     initializeScene((engine->app));
     initializeCharactors((engine->app));
@@ -373,6 +376,9 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 void mknTest(struct android_app* state)
 {
 	LOGI("mknTest");
+	test_loadFile(state->activity->assetManager, "readTest.txt");
+	test_writeDataFile();
+#if 0	/*pngload test*/
 	AAsset *file = AAssetManager_open(state->activity->assetManager, "test.png", AASSET_MODE_UNKNOWN);
 	if(file == NULL)
 	{
@@ -400,7 +406,7 @@ void mknTest(struct android_app* state)
 	GLubyte* textureImage;
 	png_loadimage(state->activity->assetManager, "test.png", &width, &height,&type,&textureImage);
 	/* textureImage‚ÌDelete•K—v */
-
+#endif
 }
 /**
  * This is the main entry point of a native application that is using

@@ -36,7 +36,6 @@ class clsCharactor
 		/* このキャラクタ向けのテクスチャ管理 */
 		int imageNum;
 		long tickTime;				/* このキャラクターの時間 */
-		GLubyte* pCharactorImages[C_CLS_CHARA_IMAGE_NUM];		/* 画像 */
 		GLuint texNames[C_CLS_CHARA_IMAGE_NUM];					/* テクスチャに対しユニークな番号 */
 		/* このキャラクタ向けのマテリアル管理 */
 		float charVertices[12];									/* 四角形の頂点リスト */

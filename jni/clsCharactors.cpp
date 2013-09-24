@@ -102,10 +102,7 @@ clsCharactor::clsCharactor(void)
 	int i;
 	tickTime = 0;
 	imageNum = 0;
-	for(i =0; i < C_CLS_CHARA_IMAGE_NUM; i++)
-	{
-		pCharactorImages[i] = NULL;
-	}
+
 	charIndices[0] = 0;
 	charIndices[1] = 1;
 	charIndices[2] = 2;
@@ -142,11 +139,7 @@ clsCharactor::clsCharactor(const char* name, int id)
  */
 clsCharactor::~clsCharactor(void)
 {
-	while(imageNum > 0)
-	{
-		free(pCharactorImages[imageNum]);
-		imageNum--;
-	}
+
 }
 /*
  *	SetMaterialSize
@@ -194,7 +187,6 @@ int clsCharactor::AddTexture(GLuint texName, int width, int height)
 	{
 		return false;
 	}
-//	pCharactorImages[imageNum] = pImage;
 	texNames[imageNum] = texName;
 	imageNum ++;
 	return true;
@@ -210,7 +202,7 @@ int clsCharactor::AdddAnimate(void)
 }
 /*
  *	フレーム移動
- *	引数：	経過時間の差分
+ *	引数：	経過時間の差分(NanoSec単位)
  */
 void clsCharactor::MoveFrame(long tick)
 {
