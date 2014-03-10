@@ -51,6 +51,9 @@ const GLfloat cubeTexCoords[] = {
 		0,0,1,0,1,1,0,1,
 		0,0,1,0,1,1,0,1
 };*/
+/*
+ * コマ：0-7
+ */
 const GLfloat cubeTexCoords[] = {
 		   0,0.834, 0.25,0.834, 0.25,1.00, 0,1.00,
 		0.25,0.834, 0.50,0.834, 0.50,1.00, 0.25,1.00,
@@ -72,7 +75,9 @@ const GLfloat cubeTexCoords[] = {
 		0.50,0.667, 0.75,0.667, 0.75,0.834, 0.50,0.834,
 		0.75,0.667, 1.00,0.667, 1.00,0.834, 0.75,0.834,
 };
-
+/*
+ * コマ：16-24
+ */
 const GLfloat cubeTexCoords2[] = {
 		   0,0.167, 0.25,0.167, 0.25,0.334, 0,0.334,
 		0.25,0.167, 0.50,0.167, 0.50,0.334, 0.25,0.334,
@@ -99,31 +104,9 @@ const GLfloat cubeTexCoords2[] = {
  */
 clsCharactor::clsCharactor(void)
 {
+	Initialize();
 	int i;
-	tickTime = 0;
-	imageNum = 0;
 
-	charIndices[0] = 0;
-	charIndices[1] = 1;
-	charIndices[2] = 2;
-	charIndices[3] = 2;
-	charIndices[4] = 3;
-	charIndices[5] = 0;
-
-	charTexCoords[0] = 0.0f;
-	charTexCoords[1] = 0.0f;
-	charTexCoords[2] = 1.0f;
-	charTexCoords[3] = 0.0f;
-	charTexCoords[4] = 1.0f;
-	charTexCoords[5] = 1.0f;
-	charTexCoords[6] = 0.0f;
-	charTexCoords[7] = 1.0f;
-	SetMaterialSize(1.0f, 1.0f);
-
-
-	/* カウンタ初期化 */
-	animateTick = 0;
-	animatePos = 0;
 }
 /*
  * コンストラクタ
@@ -138,6 +121,14 @@ clsCharactor::clsCharactor(const char* name, int id)
  * デストラクタ
  */
 clsCharactor::~clsCharactor(void)
+{
+
+}
+/*
+ * initialize
+ *	初期化
+ */
+void clsCharactor::Initialize(void)
 {
 
 }
@@ -174,6 +165,29 @@ bool clsCharactor::SetMaterialSize(float width, float height)
  */
 bool clsCharactor::SetCharSize(long wifth, long height)
 {
+	tickTime = 0;
+	imageNum = 0;
+
+	charIndices[0] = 0;
+	charIndices[1] = 1;
+	charIndices[2] = 2;
+	charIndices[3] = 2;
+	charIndices[4] = 3;
+	charIndices[5] = 0;
+
+	charTexCoords[0] = 0.0f;
+	charTexCoords[1] = 0.0f;
+	charTexCoords[2] = 1.0f;
+	charTexCoords[3] = 0.0f;
+	charTexCoords[4] = 1.0f;
+	charTexCoords[5] = 1.0f;
+	charTexCoords[6] = 0.0f;
+	charTexCoords[7] = 1.0f;
+	SetMaterialSize(1.0f, 1.0f);
+
+	/* カウンタ初期化 */
+	animateTick = 0;
+	animatePos = 0;
 
 }
 /*
@@ -198,7 +212,16 @@ int clsCharactor::AddTexture(GLuint texName, int width, int height)
  */
 int clsCharactor::AdddAnimate(void)
 {
-
+//	glTranslatef(1,1,1);
+}
+/*
+ * タッチ
+ * 引数： int x: x座標
+　* 引数： int y: y座標
+ */
+void clsCharactor::Touch(int x, int y)
+{
+	glTranslatef(1,1,1);
 }
 /*
  *	フレーム移動
@@ -262,8 +285,8 @@ int clsCharactor::Draw(void)
 	/* テクスチャ割り当て */
     glBindTexture(GL_TEXTURE_2D, texNames[0]);
 	//回転
-    glRotatef(angle, 1.0f, 0.25f, 0.5f);
-
+//    glRotatef(angle, 1.0f, 0.25f, 0.5f);
+    glTranslatef(1,0.1,0.1);
     //頂点リスト
     glVertexPointer(3, GL_FLOAT, 0, cubeVertices);
     //頂点リスト有効化
@@ -271,8 +294,7 @@ int clsCharactor::Draw(void)
     //テクスチャの指定
     glEnable(GL_TEXTURE_2D);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, &cubeTexCoords2[8*animatePos]);
+    glTexCoordPointer(2, GL_FLOAT, 0, &cubeTexCoords[8*animatePos]);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, cubeIndices);
-
 
 }

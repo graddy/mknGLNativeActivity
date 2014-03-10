@@ -27,6 +27,16 @@ typedef struct {
 }S_POINT;
 
 /*
+ * ANGLE\‘¢‘Ì
+ * OŸŒ³ã‚ÌŒü‚«‚ÌŠÇ—
+ */
+typedef struct {
+	float x;		/* X² */
+	float y;		/* Y² */
+	float z;		/* Z² */
+}S_ANGLE;
+
+/*
  * SIZE\‘¢‘Ì
  *
  */

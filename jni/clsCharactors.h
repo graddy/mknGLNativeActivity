@@ -23,13 +23,14 @@ class clsCharactor
 		clsCharactor(const char* name, int);
 		~clsCharactor(void);
 		/* メソッド */
-		bool SetMaterialSize(float width, float height);
-		bool SetCharSize(long wifth, long height);
-
-		int AddTexture( GLuint texName, int width, int height);
-		int AdddAnimate(void);				//t.b.d
-		void MoveFrame(long tick);
-		int Draw(void);						//t.b.d
+		void Initialize(void);		/* 初期化 */
+		bool SetMaterialSize(float width, float height);			/* マテリアルサイズ設定 */
+		bool SetCharSize(long wifth, long height);					/* キャラクタサイズ設定 t.b.d */
+		int AddTexture( GLuint texName, int width, int height);		/* テクスチャ追加 */
+		int AdddAnimate(void);				/* アニメーション追加 t.b.d　*/
+		void MoveFrame(long tick);			/* フレーム更新 */
+		int Draw(void);						/* 描画 */
+		void Touch(int x, int y);
 	private:
 		S_POSITION pos;		/* このキャラの２D位置情報 */
 		S_POINT	point;		/* このキャラの3D位置情報 */
@@ -44,7 +45,13 @@ class clsCharactor
 
 		/* アニメーション用 */
 		int animateTick;		/* アニメーション用カウンタ */
-		int animatePos;
+		int animatePos;			/* アニメーションの位置 */
+
+		/* 位置情報 */
+		S_POINT vPos;			/* 仮想位置 t.b.d */
+		S_POINT dPos;			/* 表示位置 */
+		S_ANGLE dAngle;			/* 向き */
+
 };
 
 

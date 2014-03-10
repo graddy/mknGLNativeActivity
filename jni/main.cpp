@@ -14,6 +14,8 @@
  * limitations under the License.
  *
  */
+#define _CPO_DANGOMUSHI_
+#define CFG_DRAW_CHARACTOR
 
 //BEGIN_INCLUDE(all)
 #include <jni.h>
@@ -29,6 +31,9 @@
 #include "png_loader.h"
 #include "testcodes.h"
 #include "clsCharactors.h"
+#ifdef _CPO_DANGOMUSHI_
+#include "clsDangomushi.h"
+#endif
 
 /* デバッグ用メッセージ */
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "mknGLnative-activity", __VA_ARGS__))	//! Infomation
@@ -95,14 +100,17 @@ float colorBuffer[] = {
         1.0, };
 ///////////////
 
+#ifdef _CPO_DANGOMUSHI_
+clsDangomushi* pTestChara = NULL;
+#else
 clsCharactor* pTestChara = NULL;
+#endif
 void initializeScene(struct android_app* state);
 int initializeTextures(struct android_app* state, GLuint* pTexName, int* pWidth, int* pHeight);
 void initializeCharactors(struct android_app* state);
 clsCharactor* createCharactor( int texNum, GLuint* pTexName, int width, int height);
 void mknTest(struct android_app* state);
 
-#define CFG_DRAW_CHARACTOR
 /**
  * 表示の初期化
  */
@@ -266,12 +274,24 @@ static void engine_draw_frame(struct engine* engine) {
 #ifdef CFG_DRAW_CHARACTOR
     long tickTime;
     tickTime = nowTick - engine->tickTime;
-
+    /* 描画準備 */
     prepareFrame(engine->width, engine->height);
+
+
+    /* MoveとDraw分けるべしt.b.d */
+
+    pTestChara->Touch(engine->state.x, engine->state.y);
+
     pTestChara->MoveFrame(tickTime);
+
+    /* 描画 */
     pTestChara->Draw();
+
     eglSwapBuffers(engine->display, engine->surface);
     engine->tickTime = nowTick;
+
+    LOGI("Draw %d, %d", engine->state.x, engine->state.y);
+
 #endif
 
 }
@@ -556,7 +576,11 @@ void initializeCharactors(struct android_app* state)
     int textureNum = 1;
     /* テクスチャを展開する */
     textureNum = initializeTextures(state, texName, width, height);
+#ifdef _CPO_DANGOMUSHI_
+    pTestChara = (clsDangomushi*)createCharactor(textureNum, texName, width[1], height[1]);
+#else
     pTestChara = createCharactor(textureNum, texName, width[1], height[1]);
+#endif
 }
 /*
   *	createCharactor
@@ -570,8 +594,8 @@ clsCharactor* createCharactor( int texNum, GLuint* pTexName, int width, int heig
 	/* クラス作成 */
 	pChara = new clsCharactor();
 
-	/* 初期化 t.b.d */
-//	pChara->initialize();
+	/* 初期化  */
+	pChara->Initialize();
 	/* モデル作成 t.b.d*/
 //	pChara->createModel();
 	/* テクスチャの読み込みと設定 */
